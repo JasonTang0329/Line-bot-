@@ -1,0 +1,24 @@
+{
+  "name": "linebot",
+  "version": "1.0.0",
+  "description": "line service",
+  "main": "app.js",
+  "dependencies": {
+    "async": "^2.6.2",
+    "linebot": "^1.4.1",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "keywords": [
+    "line",
+    "bot",
+    "service",
+    "record"
+  ],
+  "author": "jason",
+  "license": "ISC"
+}
