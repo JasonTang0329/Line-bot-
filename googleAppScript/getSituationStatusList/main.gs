@@ -8,18 +8,18 @@ function doPost(e) {
 
     SpreadSheet.getSheets().map(function (sheet) {
         const Sheet = SpreadSheet.getSheetByName(sheet.getName());
-        const maxColumns = Sheet.getMaxColumns();
 
-        for (var i = 2; i <= maxColumns; i++) {
-            if (Sheet.getRange(i, 7).getValues() == status){
+        var lastRow = Sheet.getLastRow();
+        for (var i = 2; i <= lastRow; i++) {
+            if (Sheet.getRange(i, 7).getValues() == status) {
                 msg += Sheet.getRange(i, 1).getValues() + reline;
-                total ++;
+                total++;
             }
 
         }
 
     });
-    msg += '共' + total + '件'+ reline;
+    msg += '共' + total + '件' + reline;
     msg += '=========================================';
     return ContentService.createTextOutput(msg);
 }

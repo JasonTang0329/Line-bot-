@@ -1,66 +1,55 @@
 function doPost(e) {
   const params = e.parameter;
-  const sitNo = params.sNo;
-  const reason = params.reason;
-  const author = params.author;
-  const status = params.status;
-  const fTime= params.fTime;
   const today = new Date();
-  const tDate = today.getFullYear() + '/' + Appendzero(today.getMonth() + 1) + '/' + Appendzero(today.getDate()) + ' ' + Appendzero(today.getHours()) + ':' + Appendzero(today.getMinutes()) + ':' + Appendzero(today.getSeconds());  
-  const reline = "\n";
-
-  if (isNaN(sitNo) || sitNo.toString().length != 11) {
-    return ContentService.createTextOutput('你輸入的問題序號是： ' + sitNo + ' ，並非合法的序號喔！');
-  }
+  const tDate = today.getFullYear() + Appendzero(today.getMonth() + 1) + Appendzero(today.getDate());
+  const author = params.author;
+  const situation = params.situation;
+  const fDate = params.fDate;
+  const sType = params.sType;
+  const note = (params.note == '' ? '' : (tDate + ' ' + author + '  ' + params.note));
+  
   const SpreadSheet = SpreadsheetApp.openById("Your google sheet's ID,PLS Sharing And Collaboration Editing"); //*** Need to change ***
-  var sSate = sitNo.substring(0, 8);
-  var Sheet = SpreadSheet.getSheetByName(sSate);
+  var Sheet = SpreadSheet.getSheetByName(tDate);
+  var sitNo;
+  
+  //處理活頁簿頁籤
   if (!Sheet) {
-    return ContentService.createTextOutput('你輸入的問題序號是： ' + sitNo + ' ，並無該筆紀錄哦，請確認編號是否正確！');
-  }
-
-  var msg = '';
-  var bol = false;
-  var maxColumns = Sheet.getMaxColumns();
-
-  if (maxColumns < 2) {
-    return ContentService.createTextOutput('你輸入的問題序號是： ' + sitNo + ' ，並無該筆紀錄哦，請確認編號是否正確2！');
-  }
-
-  for (var i = 2; i <= maxColumns; i++) {
-    var range = Sheet.getRange(i, 1);
-    if (sitNo == range.getValues()) {
-      const detail = Sheet.getRange(i, 8).getValues() + reline + tDate + ' ' + author + reline + reason;
-      Sheet.getRange(i, 7).setValue(status);
-      Sheet.getRange(i, 8).setValue(detail);
-      Sheet.getRange(i, 9).setValue(author);
-      Sheet.getRange(i, 10).setValue(fTime);
-      
-      bol = true;
-
-      msg = '你輸入的問題序號是： ' + sitNo + reline + reline;
-      msg += '================================================================' + reline;
-      msg += '反應時間為： ' + Sheet.getRange(i, 2).getValues() + reline;
-      msg += '反應人員為： ' + Sheet.getRange(i, 3).getValues() + reline;
-      msg += '反應類型為： ' + Sheet.getRange(i, 4).getValues() + reline;
-      msg += '反應內容為： ' + Sheet.getRange(i, 5).getValues() + reline;
-      msg += '希望完成日為： ' + Sheet.getRange(i, 6).getValues() + reline;
-      msg += '================================================================' + reline;
-      msg += '問題的處理狀況如下：' + reline;
-      msg += '處理狀態為： ' + (Sheet.getRange(i, 7).getValues() == 'Y' ? '處理完成' : Sheet.getRange(i, 7).getValues() == 'C' ? '處理中' : '尚未承接') + reline;
-      msg += '處理情形為： ' + Sheet.getRange(i, 8).getValues() + reline;
-      msg += Sheet.getRange(i, 9).getValues() != '' ? ('處理人員為： ' + Sheet.getRange(i, 9).getValues() + reline) : '';
-      msg += Sheet.getRange(i, 10).getValues() != '' ? ('處理完成日為： ' + Sheet.getRange(i, 10).getValues() + reline) : '';
-      msg += '================================================================' + reline;
-      msg += Sheet.getRange(i, 11).getValues() != '' ? ('備註： ' + reline + Sheet.getRange(i, 11).getValues() + reline) : '';
-      msg += '================================================================' + reline;
-      break;
-    }
+    SpreadSheet.insertSheet(tDate.toString());
+    
+    //sitNo = tDate + '0001';
+    Sheet = SpreadSheet.getSheetByName(tDate);
+    Sheet.getRange(1, 1).setValue('問題編號');
+    Sheet.getRange(1, 2).setValue('時間');
+    Sheet.getRange(1, 3).setValue('反映人');
+    Sheet.getRange(1, 4).setValue('問題類型');    
+    Sheet.getRange(1, 5).setValue('事件描述');
+    Sheet.getRange(1, 6).setValue('希望完成日');
+    Sheet.getRange(1, 7).setValue('處理狀態');
+    Sheet.getRange(1, 8).setValue('處理情形');
+    Sheet.getRange(1, 9).setValue('處理人員');
+    Sheet.getRange(1, 10).setValue('完成日');
+    Sheet.getRange(1, 11).setValue('備註');
 
   }
-  if (!bol) {
-    msg = '你輸入的問題序號是： ' + sitNo + ' ，並無該筆紀錄哦，請確認編號是否正確！';
+
+  //處理編號
+  const LastRow = Sheet.getLastRow();
+  var range = Sheet.getRange(LastRow, 1);
+  if (LastRow == 1) {
+    sitNo = tDate + '001'
+  } else {
+    sitNo = parseInt(range.getValues()) + 1;
   }
-  return ContentService.createTextOutput(msg);
+
+  Sheet.getRange(LastRow + 1, 1).setValue(sitNo);
+  Sheet.getRange(LastRow + 1, 2).setValue(today);
+  Sheet.getRange(LastRow + 1, 3).setValue(author);
+  Sheet.getRange(LastRow + 1, 4).setValue(sType);
+  Sheet.getRange(LastRow + 1, 5).setValue(situation);
+  Sheet.getRange(LastRow + 1, 6).setValue(fDate);
+  Sheet.getRange(LastRow + 1, 7).setValue('N');
+  Sheet.getRange(LastRow + 1, 11).setValue(note);
+  return ContentService.createTextOutput('問題回報序號為：' + sitNo);
 
 }
+

@@ -4,28 +4,21 @@ function doPost(e) {
   const reason = params.reason;
   const author = params.author;
   const today = new Date();
-  const tDate = today.getFullYear() + '/' + Appendzero(today.getMonth() + 1) + '/' + Appendzero(today.getDate()) + ' ' + Appendzero(today.getHours()) + ':'+ Appendzero(today.getMinutes()) + ':' + Appendzero(today.getSeconds());  
+  const tDate = today.getFullYear() + '/' + Appendzero(today.getMonth() + 1) + '/' + Appendzero(today.getDate()) + ' ' + Appendzero(today.getHours()) + ':' + Appendzero(today.getMinutes()) + ':' + Appendzero(today.getSeconds());
   const reline = "\n";
 
-  if (isNaN(sitNo) || sitNo.toString().length != 11) {
-    return ContentService.createTextOutput('你輸入的問題序號是： ' + sitNo + ' ，並非合法的序號喔！');
-  }
   const SpreadSheet = SpreadsheetApp.openById("Your google sheet's ID,PLS Sharing And Collaboration Editing"); //*** Need to change ***
+
   var sSate = sitNo.substring(0, 8);
   var Sheet = SpreadSheet.getSheetByName(sSate);
-  if (!Sheet) {
-    return ContentService.createTextOutput('你輸入的問題序號是： ' + sitNo + ' ，並無該筆紀錄哦，請確認編號是否正確！');
-  }
+
 
   var msg = '';
   var bol = false;
-  var maxColumns = Sheet.getMaxColumns();
+  var lastRow = Sheet.getLastRow();
 
-  if (maxColumns < 2) {
-    return ContentService.createTextOutput('你輸入的問題序號是： ' + sitNo + ' ，並無該筆紀錄哦，請確認編號是否正確2！');
-  }
 
-  for (var i = 2; i <= maxColumns; i++) {
+  for (var i = 2; i <= lastRow; i++) {
     var range = Sheet.getRange(i, 1);
     if (sitNo == range.getValues()) {
       const detail = Sheet.getRange(i, 8).getValues() + reline + tDate + ' ' + author + reline + reason;

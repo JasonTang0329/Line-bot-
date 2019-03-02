@@ -5,6 +5,28 @@ let helper = {};
 
 
 //==============================================================================
+helper.checkSituationNo = (sNo, cb) => {
+    const data = {
+        "sNo": sNo
+    }
+
+
+
+    var options = {
+        url: config.checkSituationNOAPI,
+        method: 'POST',
+        followAllRedirects: true,
+        form: data
+    }
+    request(options, function (err, res, body) {
+        if (!err && res.statusCode == 200) {
+            console.log(body)
+            cb(body);
+        } else {
+            cb('error');
+        }
+    });
+}
 helper.getSituation = (sNo, cb) => {
     const data = {
         "sNo": sNo

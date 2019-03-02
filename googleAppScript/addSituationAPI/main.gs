@@ -7,21 +7,21 @@ function doPost(e) {
   const fDate = params.fDate;
   const sType = params.sType;
   const note = (params.note == '' ? '' : (tDate + ' ' + author + '  ' + params.note));
-  
+
   const SpreadSheet = SpreadsheetApp.openById("Your google sheet's ID,PLS Sharing And Collaboration Editing"); //*** Need to change ***
   var Sheet = SpreadSheet.getSheetByName(tDate);
   var sitNo;
-  
+
   //處理活頁簿頁籤
   if (!Sheet) {
     SpreadSheet.insertSheet(tDate.toString());
-    
+
     //sitNo = tDate + '0001';
     Sheet = SpreadSheet.getSheetByName(tDate);
     Sheet.getRange(1, 1).setValue('問題編號');
     Sheet.getRange(1, 2).setValue('時間');
     Sheet.getRange(1, 3).setValue('反映人');
-    Sheet.getRange(1, 4).setValue('問題類型');    
+    Sheet.getRange(1, 4).setValue('問題類型');
     Sheet.getRange(1, 5).setValue('事件描述');
     Sheet.getRange(1, 6).setValue('希望完成日');
     Sheet.getRange(1, 7).setValue('處理狀態');
@@ -52,4 +52,3 @@ function doPost(e) {
   return ContentService.createTextOutput('問題回報序號為：' + sitNo);
 
 }
-

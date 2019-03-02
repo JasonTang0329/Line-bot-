@@ -4,23 +4,16 @@ const config = require('../config/config');
 let helper = {};
 
 //==============================================================================
-helper.addLog = (author, msg, cb) => {
-    const data = {
-        "author": author,
-        "situation": msg
-    }
-
-
-
+helper.getGroupID = (cb) => {
     var options = {
-        url: config.logSheetAPI,
+        url: config.getGroupIDAPI,
         method: 'POST',
         followAllRedirects: true,
-        form: data
+        form: ''
     }
     request(options, function (err, res, body) {
         if (!err && res.statusCode == 200) {
-            
+            //console.log(body)
             cb(body);
         } else {
             cb('error');
